@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = mongoose.Schema({
     name: {
         type: String,
         required: [true, 'A tour must have a name'],
         unique: true,
-        trime: true
+        trime: true,
+        maxLength: [40, 'A tour name must have less or equal than 40 characters'],
+        minLength: [10, 'A tour name must have more or equal than 10 characters']
     },
+    slug: String,
     duration: {
         type: Number,
         required: [true, 'A tour must have a duration']
@@ -17,7 +21,11 @@ const tourSchema = mongoose.Schema({
     },
     difficulty: {
         type: String,
-        required: [true, 'A tour must have a difficulty']
+        required: [true, 'A tour must have a difficulty'],
+        enum: {
+            values: ['easy', 'medium', 'difficult'],
+            message: 'Difficulty is either: easy, medium, difficult'
+        }
     },
     ratingsAverage: {
         type: Number,
@@ -30,6 +38,15 @@ const tourSchema = mongoose.Schema({
     price: {
         type: Number,
         required: [true, 'A tour must have a price']
+    },
+    priceDiscount: {
+        type: Number,
+        validate: {
+            validator: function (val) {
+                return val < this.price;
+            },
+            message: 'Discount price ({VALUE}) should be below regular price'
+        }
     },
     summary: {
         type: String,
@@ -51,6 +68,17 @@ const tourSchema = mongoose.Schema({
     },
     startDates: [Date]
 })
+
+// Document middleware: runs before .save() and .create()
+tourSchema.pre('save', function (next) {
+    this.slugify = slugify(this.name, { lower: true });
+    next();
+})
+
+// tourSchema.post('save', function (doc, next) {
+//     console.log(doc);
+//     next();
+// })
 
 const Tour = mongoose.model('Tour', tourSchema);
 
