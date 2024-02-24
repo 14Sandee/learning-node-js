@@ -8,3 +8,4 @@ module.exports = ((err, req, res, next) => {
     })
 })
 
+// TODO: 5. Implementing a Global Error Handling Middleware
