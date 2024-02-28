@@ -6,6 +6,12 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 
+const signToken = id => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN
+    });
+}
+
 exports.signup = catchAsync(async (req, res, next) => {
 
     const newUser = await User.create({
@@ -16,9 +22,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         passwordConfirm: req.body.passwordConfirm
     });
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
+    const token = signToken(newUser._id);
 
     res.status(201).json({
         status: 'success',
@@ -45,9 +49,7 @@ exports.login = catchAsync(async (req, res, next) => {
     }
 
     //3) If everything is ok, send token to client
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
+    const token = signToken(user._id);
 
     res.status(200).json({
         status: 'success',
@@ -156,12 +158,10 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
     //4) Log the user in, send JWT
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
-    });
+    const token = signToken(user._id);
 
     res.status(200).json({
         status: 'success',
         token
     });
-})
+});
