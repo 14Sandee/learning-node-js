@@ -1,11 +1,13 @@
 const express = require('express');
 const { getAllTours, getTour, createTour, updateTour, deleteTour, checkID, checkBody, aliasTopTour, getTourStats, getMonthlyPlan } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
-const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
 // router.param('id', checkID);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliasTopTour, getAllTours);
 
@@ -16,7 +18,5 @@ router.route('/').get(protect, getAllTours).post(createTour);
 
 router.route('/:id').get(getTour).patch(updateTour).delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
-
-router.route('/:tourId/reviews').post(protect, restrictTo('user'), reviewController.createReview);
 
 module.exports = router;
