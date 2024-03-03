@@ -82,6 +82,19 @@ const tourSchema = mongoose.Schema({
         address: String,
         description: String
     },
+    locations: [
+        {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            day: Number
+        }
+    ]
 })
 
 // Document middleware: runs before .save() and .create()
