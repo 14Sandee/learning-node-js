@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllTours, getTour, createTour, updateTour, deleteTour, checkID, checkBody, aliasTopTour, getTourStats, getMonthlyPlan } = require('../controllers/tourController');
+const { getAllTours, getTour, createTour, updateTour, deleteTour, checkID, checkBody, aliasTopTour, getTourStats, getMonthlyPlan, getToursWithin } = require('../controllers/tourController');
 const { protect, restrictTo } = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
 
@@ -17,6 +17,9 @@ router.route('/tour-stats')
 
 router.route('/monthly-plan/:year')
     .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit')
+    .get(getToursWithin);
 
 router.route('/')
     .get(getAllTours)
