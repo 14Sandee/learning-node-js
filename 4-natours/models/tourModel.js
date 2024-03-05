@@ -128,7 +128,7 @@ tourSchema.virtual('reviews', {
 
 // Document middleware: runs before .save() and .create()
 tourSchema.pre('save', function (next) {
-    this.slugify = slugify(this.name, { lower: true });
+    this.slug = slugify(this.name, { lower: true });
     next();
 })
 
