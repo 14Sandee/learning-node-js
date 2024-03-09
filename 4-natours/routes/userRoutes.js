@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllUsers, getUser, createUser, deleteUser, updateUser, updateMe, deleteMe, getMe } = require('../controllers/userController')
+const { getAllUsers, getUser, createUser, deleteUser, updateUser, updateMe, deleteMe, getMe, uploadUserPhoto } = require('../controllers/userController')
 const { signup, login, forgotPassword, resetPassword, updatePassword, protect, restrictTo, logout } = require('../controllers/authController');
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.patch('/resetPassword/:token', resetPassword);
 router.use(protect);
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // Restrict all routes after this middleware to admin only

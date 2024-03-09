@@ -1,7 +1,33 @@
+const multer = require('multer');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
+
+const multerStorage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, 'public/img/users')
+    },
+    filename: (req, file, callback) => {
+        const ext = file.mimetype.split('/')[1];
+        callback(null, `user-${req.user.id}-${Date.now()}.${ext}`)
+    }
+})
+
+const multerFilter = (req, file, callback) => {
+    if (file.mimetype.startsWith('image')) {
+        callback(null, true);
+    } else {
+        callback(new AppError('Not an image! Please upload only images.', 400), false);
+    }
+}
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+});
+
+exports.uploadUserPhoto = upload.single('photo');
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -24,6 +50,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
     // 2) Filtered out unwanted fields names that are not allowed to be updated
     const filteredBody = filterObj(req.body, 'name', 'email');
+    if (req.file) filteredBody.photo = req.file.filename;
 
     // 3) Update user document
     const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
