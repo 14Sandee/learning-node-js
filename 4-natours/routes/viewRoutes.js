@@ -1,5 +1,5 @@
 const express = require('express');
-const { getOverview, getTour, getLoginForm, getAccount } = require('../controllers/viewController');
+const { getOverview, getTour, getLoginForm, getAccount, updateUserData } = require('../controllers/viewController');
 const { isLoggedIn, protect } = require('../controllers/authController');
 
 const router = express.Router();
