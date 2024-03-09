@@ -39,7 +39,7 @@ const sendErrorDev = (err, req, res) => {
     })
 }
 
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (err, req, res) => {
     if (req.originalUrl.startsWith('/api')) {
         // Operational, trusted error: send message to client
         if (err.isOperational) {
@@ -91,6 +91,6 @@ module.exports = ((err, req, res, next) => {
 
         if (error.name === 'TokenExpiredError') error = handleJWTExpiredError()
 
-        sendErrorProd(error, res)
+        sendErrorProd(error, req, res)
     }
 })
