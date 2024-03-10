@@ -7,8 +7,13 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
-// TODO: complete this project before 8 march.
+// TODO: add restriction to users that they can review a tour they have only booked
+// TODO: add a signup form
+// TODO: add a form to review the tour
+// TODO: hide the booking tour if user has already booked the tour
+// TODO: add a like button to the tour
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -65,6 +70,8 @@ app.use(hpp({
         'price'
     ]
 }));
+
+app.use(compression())
 
 // Test middleware
 app.use((req, res, next) => {
