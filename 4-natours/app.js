@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 // TODO: add restriction to users that they can review a tour they have only booked
 // TODO: add a signup form
@@ -29,6 +30,11 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) Global MIDDLEWARES
+
+// Implement CORS
+app.use(cors());
+
+app.options('*', cors());
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
